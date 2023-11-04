@@ -82,7 +82,7 @@ def get_num_clusters_per_artist() -> Dict[str, int]:
     artist_spreads = get_artist_spreads_over_clusters(top_tracks, labels)
     print(f"Artist to Cluster Distribution Table:\n{artist_spreads}")
     num_clusters_per_artist = {artist: len(cluster_spread) for artist, cluster_spread in artist_spreads.items()}
-    print(f"Artist to Number of Clusters Map:\n{num_clusters_per_artist}")
+    print(f"Artist to Number of Home Clusters Map:\n{num_clusters_per_artist}")
     return num_clusters_per_artist
 
 
