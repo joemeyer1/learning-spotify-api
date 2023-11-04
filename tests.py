@@ -5,10 +5,10 @@ import unittest
 
 import numpy as np
 
-from clustering_helpers import cluster_tracks, write_clusters_to_csv, get_artist_spreads_over_clusters, normalize_data, plot_tracks_with_clusters
-from data_manager import DataManager
-from music_info import ArtistInfo, TrackInfo
-from target_feature_types import target_feature_types
+from utilities.clustering_helpers import cluster_tracks, write_clusters_to_csv, get_artist_spreads_over_clusters, normalize_data, plot_tracks_with_clusters
+from utilities.data_manager import DataManager
+from utilities.music_info import ArtistInfo, TrackInfo
+from utilities.target_feature_types import target_feature_types
 
 
 class TestSpotifyProj(unittest.TestCase):

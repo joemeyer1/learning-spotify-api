@@ -14,8 +14,8 @@ from bokeh.palettes import Category20
 from bokeh.plotting import figure
 from sklearn.cluster import HDBSCAN
 
-from music_info import TrackInfo
-from target_feature_types import target_feature_types
+from utilities.music_info import TrackInfo
+from utilities.target_feature_types import target_feature_types
 
 
 def cluster_tracks(tracks: List[TrackInfo], min_cluster_size: int = 4) -> np.ndarray:

@@ -4,10 +4,10 @@ import pandas as pd
 
 from typing import Dict
 
-from data_manager import DataManager
+from utilities.data_manager import DataManager
 
-from clustering_helpers import cluster_tracks, write_clusters_to_csv, get_artist_spreads_over_clusters, plot_tracks_with_clusters
-from music_info import ArtistInfo
+from utilities.clustering_helpers import cluster_tracks, write_clusters_to_csv, get_artist_spreads_over_clusters, plot_tracks_with_clusters
+from utilities.music_info import ArtistInfo
 
 
 def get_top_led_zep_tracks_and_feats() -> pd.DataFrame:

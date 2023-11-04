@@ -7,8 +7,8 @@ from typing import Dict, Any, List, Optional
 
 import pandas as pd
 
-from music_info import ArtistInfo, TrackInfo
-from target_feature_types import target_feature_types
+from utilities.music_info import ArtistInfo, TrackInfo
+from utilities.target_feature_types import target_feature_types
 
 
 class DataManager:
@@ -26,7 +26,7 @@ class DataManager:
              -H "Content-Type: application/x-www-form-urlencoded" \
              -d "grant_type=client_credentials&client_id=41e74624046646428afaa5c8bca7173f&client_secret=d8d74e43da5e475c961090e14d2ecea7" > {access_token_filename}')
 
-        self.access_token = self._read_json('access_token.json')['access_token']
+        self.access_token = self._read_json('../access_token.json')['access_token']
         return self.access_token
 
     def fetch_top_tracks_df(self, artists: List[ArtistInfo], filename: Optional[str] = None) -> pd.DataFrame:

@@ -1,8 +1,8 @@
 #!usr/bin/env python3
 
-from clustering_helpers import cluster_tracks, write_clusters_to_csv
-from data_manager import DataManager
-from music_info import ArtistInfo
+from utilities.clustering_helpers import cluster_tracks, write_clusters_to_csv
+from utilities.data_manager import DataManager
+from utilities.music_info import ArtistInfo
 
 
 def main(seed_artist_info: ArtistInfo = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")):
