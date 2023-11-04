@@ -10,8 +10,7 @@ from typing import Dict, Any, List, Optional
 
 from target_feature_types import target_feature_types
 
-
-from main import ArtistInfo, TrackInfo
+from music_info import ArtistInfo, TrackInfo
 
 
 class DataManager:
@@ -32,7 +31,7 @@ class DataManager:
         self.access_token = self._read_json('access_token.json')['access_token']
         return self.access_token
 
-    def get_top_tracks_for_artists(self, artists: List[ArtistInfo]) -> List[TrackInfo]:
+    def get_top_tracks(self, artists: List[ArtistInfo]) -> List[TrackInfo]:
         """Returns artists' top tracks."""
 
         def _get_top_tracks_for_artist(artist: ArtistInfo) -> List[TrackInfo]:

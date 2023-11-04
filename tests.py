@@ -5,9 +5,11 @@ import unittest
 
 import numpy as np
 
-from main import normalize_data, generate_access_token, ArtistInfo, TrackInfo, get_top_tracks, convert_tracks_to_df, get_similar_artists, cluster_tracks, plot_data, write_artist_clusters, get_artist_spreads
-from target_feature_types import target_feature_types
+from data_manager import DataManager
 
+from main import normalize_data, convert_tracks_to_df, cluster_tracks, plot_data, write_artist_clusters, get_artist_spreads
+from music_info import ArtistInfo, TrackInfo
+from target_feature_types import target_feature_types
 
 
 class TestSpotifyProj(unittest.TestCase):
@@ -20,9 +22,9 @@ class TestSpotifyProj(unittest.TestCase):
                                                    [1.5, 1.5, 1.5]])))
 
     def test_fetch_top_tracks(self):
-        access_token = generate_access_token()
+        data_manager = DataManager()
         artists = [ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")]
-        top_tracks = get_top_tracks(artists=artists, access_token=access_token)
+        top_tracks = data_manager.get_top_tracks(artists=artists)
         self.assertGreater(len(top_tracks), 0)
         self.assertEqual(type(top_tracks[0]), TrackInfo)
         self.assertEqual(type(top_tracks[0].name), str)
@@ -31,37 +33,37 @@ class TestSpotifyProj(unittest.TestCase):
         self.assertEqual(type(top_tracks[0].feats[target_feature_types[0]]), float)
 
     def test_fetch_similar_artists(self):
-        access_token = generate_access_token()
+        data_manager = DataManager()
         led_zep_info = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")
-        similar_artists = get_similar_artists(led_zep_info.id, access_token)
+        similar_artists = data_manager.get_similar_artists(led_zep_info.id)
         self.assertGreater(len(similar_artists), 0)
         self.assertEqual(type(similar_artists[0]), ArtistInfo)
         self.assertEqual(type(similar_artists[0].name), str)
         self.assertEqual(type(similar_artists[0].id), str)
 
     def test_convert_tracks_to_df(self):
-        access_token = generate_access_token()
+        data_manager = DataManager()
         artists = [ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")]
-        top_tracks = get_top_tracks(artists=artists, access_token=access_token)
+        top_tracks = data_manager.get_top_tracks(artists=artists)
         df = convert_tracks_to_df(top_tracks, 'tracks.csv')
         self.assertGreater(len(df), 0)
         self.assertTrue(np.all(df.columns == ['track', 'artist'] + target_feature_types))
 
     def test_clustering(self):
-        access_token = generate_access_token()
+        data_manager = DataManager()
         led_zep_info = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")
-        artists = [led_zep_info] + get_similar_artists(led_zep_info.id, access_token)
-        top_tracks = get_top_tracks(artists=artists, access_token=access_token)
+        artists = [led_zep_info] + data_manager.get_similar_artists(led_zep_info.id)
+        top_tracks = data_manager.get_top_tracks(artists=artists)
         convert_tracks_to_df(top_tracks, 'tracks.csv')
 
         labels = cluster_tracks(top_tracks, min_cluster_size=4)
         self.assertEqual(len(labels), len(top_tracks))
 
     def test_cluster_writing(self):
-        access_token = generate_access_token()
+        data_manager = DataManager()
         led_zep_info = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")
-        artists = [led_zep_info] + get_similar_artists(led_zep_info.id, access_token)
-        top_tracks = get_top_tracks(artists=artists, access_token=access_token)
+        artists = [led_zep_info] + data_manager.get_similar_artists(led_zep_info.id)
+        top_tracks = data_manager.get_top_tracks(artists=artists)
         convert_tracks_to_df(top_tracks, 'tracks.csv')
 
         labels = cluster_tracks(top_tracks, min_cluster_size=4)
@@ -69,12 +71,11 @@ class TestSpotifyProj(unittest.TestCase):
         artist_clusters_df = write_artist_clusters(top_tracks, labels)
         self.assertEqual(len(artist_clusters_df), len(set(labels)))
 
-
     def test_artist_spreads(self):
-        access_token = generate_access_token()
+        data_manager = DataManager()
         led_zep_info = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")
-        artists = [led_zep_info] + get_similar_artists(led_zep_info.id, access_token)
-        top_tracks = get_top_tracks(artists=artists, access_token=access_token)
+        artists = [led_zep_info] + data_manager.get_similar_artists(led_zep_info.id)
+        top_tracks = data_manager.get_top_tracks(artists=artists)
 
         labels = cluster_tracks(tracks=top_tracks, min_cluster_size=4)
 

@@ -4,52 +4,52 @@ import pandas as pd
 
 from typing import Dict
 
-from main import cluster_tracks, \
-    plot_data, write_artist_clusters, get_artist_spreads, get_top_tracks, convert_tracks_to_df, ArtistInfo, generate_access_token, get_similar_artists
+from data_manager import DataManager
+
+from main import cluster_tracks, plot_data, write_artist_clusters, get_artist_spreads, convert_tracks_to_df
+from music_info import ArtistInfo
 
 
 def get_top_led_zep_tracks_and_feats() -> pd.DataFrame:
     """Fetches Led Zeppelin top tracks and audio features, and writes data to df."""
 
-    top_tracks = get_top_tracks(
-        artists=[ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")],
-        access_token=generate_access_token(),
-    )
+    data_manager = DataManager()
+    top_tracks = data_manager.get_top_tracks(artists=[ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")])
     return convert_tracks_to_df(top_tracks, 'led_zep_tracks.csv')
 
 
 def get_similar_artist_tracks_and_feats() -> pd.DataFrame:
     """Fetches top tracks and their audio features for artists related to Led Zeppelin."""
 
-    access_token = generate_access_token()
+    data_manager = DataManager()
     led_zep_info = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")
-    artists = get_similar_artists(led_zep_info.id, access_token)
+    artists = data_manager.get_similar_artists(led_zep_info.id)
     print(f"led zep -ish artists: {[artist.name for artist in artists]}\n\n")
-    top_tracks = get_top_tracks(artists=artists, access_token=access_token)
+    top_tracks = data_manager.get_top_tracks(artists=artists)
     return convert_tracks_to_df(top_tracks, 'tracks.csv')
 
 
 def get_led_zep_ish_tracks_and_feats() -> pd.DataFrame:
     """Fetches top tracks and their audio features for Led Zeppelin and related artists."""
 
-    access_token = generate_access_token()
+    data_manager = DataManager()
     led_zep_info = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")
-    artists = [led_zep_info] + get_similar_artists(led_zep_info.id, access_token)
+    artists = [led_zep_info] + data_manager.get_similar_artists(led_zep_info.id)
     print(f"led zep -ish artists: {[artist.name for artist in artists[1:]]}\n\n")
 
-    top_tracks = get_top_tracks(artists=artists, access_token=access_token)
+    top_tracks = data_manager.get_top_tracks(artists=artists)
     return convert_tracks_to_df(top_tracks, 'tracks.csv')
 
 
 def cluster_led_zep_ish_songs() -> pd.DataFrame:
     """Clusters songs by Led Zeppelin and related artists, and writes clusters to csv."""
 
-    access_token = generate_access_token()
+    data_manager = DataManager()
     led_zep_info = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")
-    artists = [led_zep_info] + get_similar_artists(led_zep_info.id, access_token)
+    artists = [led_zep_info] + data_manager.get_similar_artists(led_zep_info.id)
     print(f"led zep -ish artists: {[artist.name for artist in artists[1:]]}\n\n")
 
-    led_zep_ish_tracks_and_feats = get_top_tracks(artists=artists, access_token=access_token)
+    led_zep_ish_tracks_and_feats = data_manager.get_top_tracks(artists=artists)
 
     # I'm using HDBSCAN, which builds MST then deletes weakest edges until clusters are separated.
     # HDBSCAN can handle weirdly shaped clusters of different sizes, and requires minimal hyper-parameter tuning.
@@ -69,10 +69,10 @@ def cluster_led_zep_ish_songs() -> pd.DataFrame:
 def get_num_clusters_per_artist() -> Dict[str, int]:
     """Returns the number of clusters each artist appears in."""
 
-    access_token = generate_access_token()
+    data_manager = DataManager()
     led_zep_info = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")
-    artists = [led_zep_info] + get_similar_artists(led_zep_info.id, access_token)
-    top_tracks = get_top_tracks(artists=artists, access_token=access_token)
+    artists = [led_zep_info] + data_manager.get_similar_artists(led_zep_info.id)
+    top_tracks = data_manager.get_top_tracks(artists=artists)
 
     labels = cluster_tracks(tracks=top_tracks, min_cluster_size=4)
 
