@@ -6,7 +6,7 @@ from typing import Dict
 
 from data_manager import DataManager
 
-from clustering_helpers import cluster_tracks, write_artist_clusters, get_artist_spreads_over_clusters, plot_data
+from clustering_helpers import cluster_tracks, write_clusters_to_csv, get_artist_spreads_over_clusters, plot_tracks_with_clusters
 from music_info import ArtistInfo
 
 
@@ -63,7 +63,7 @@ def cluster_led_zep_ish_songs() -> pd.DataFrame:
     # but in practice this is often ok - if it's not, then lingering outliers may be clustered by another algorithm.
     labels = cluster_tracks(led_zep_ish_tracks_and_feats, min_cluster_size=4)
 
-    return write_artist_clusters(led_zep_ish_tracks_and_feats, labels)
+    return write_clusters_to_csv(led_zep_ish_tracks_and_feats, labels)
 
 
 def get_num_clusters_per_artist() -> Dict[str, int]:
@@ -76,8 +76,8 @@ def get_num_clusters_per_artist() -> Dict[str, int]:
 
     labels = cluster_tracks(tracks=top_tracks, min_cluster_size=4)
 
-    plot_data(top_tracks, labels)
-    write_artist_clusters(top_tracks, labels)
+    plot_tracks_with_clusters(top_tracks, labels)
+    write_clusters_to_csv(top_tracks, labels)
 
     artist_spreads = get_artist_spreads_over_clusters(top_tracks, labels)
     print(f"Artist to Cluster Distribution Table:\n{artist_spreads}")

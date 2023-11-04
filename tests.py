@@ -5,7 +5,7 @@ import unittest
 
 import numpy as np
 
-from clustering_helpers import cluster_tracks, write_artist_clusters, get_artist_spreads_over_clusters, normalize_data, plot_data
+from clustering_helpers import cluster_tracks, write_clusters_to_csv, get_artist_spreads_over_clusters, normalize_data, plot_tracks_with_clusters
 from data_manager import DataManager
 from music_info import ArtistInfo, TrackInfo
 from target_feature_types import target_feature_types
@@ -65,7 +65,7 @@ class TestSpotifyProj(unittest.TestCase):
 
         labels = cluster_tracks(top_tracks, min_cluster_size=4)
 
-        artist_clusters_df = write_artist_clusters(top_tracks, labels)
+        artist_clusters_df = write_clusters_to_csv(top_tracks, labels)
         self.assertEqual(len(artist_clusters_df), len(set(labels)))
 
     def test_artist_spreads(self):
@@ -76,8 +76,8 @@ class TestSpotifyProj(unittest.TestCase):
 
         labels = cluster_tracks(tracks=top_tracks, min_cluster_size=4)
 
-        plot_data(top_tracks, labels)
-        write_artist_clusters(top_tracks, labels)
+        plot_tracks_with_clusters(top_tracks, labels)
+        write_clusters_to_csv(top_tracks, labels)
 
         artist_spreads = get_artist_spreads_over_clusters(top_tracks, labels)
         num_clusters_per_artist = {artist: len(cluster_spread) for artist, cluster_spread in artist_spreads.items()}

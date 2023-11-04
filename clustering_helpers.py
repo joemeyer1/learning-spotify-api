@@ -26,6 +26,10 @@ def cluster_tracks(tracks: List[TrackInfo], min_cluster_size: int = 4) -> np.nda
         2. Outliers clustering
 
     Normalizes column means but not standard deviations.
+
+
+    sklearn HDBSCAN Docs: https://scikit-learn.org/stable/modules/generated/sklearn.cluster.HDBSCAN.html
+    sklearn HDBSCAN User Guide: https://scikit-learn.org/stable/modules/clustering.html#hdbscan
     """
 
     def _cluster_and_get_labels(tracks: List[TrackInfo], min_cluster_size: int = 4) -> np.ndarray:
@@ -55,7 +59,7 @@ def cluster_tracks(tracks: List[TrackInfo], min_cluster_size: int = 4) -> np.nda
     return labels
 
 
-def write_artist_clusters(top_tracks, labels, clusters_filename='clusters.csv'):
+def write_clusters_to_csv(top_tracks, labels, clusters_filename='clusters.csv'):
 
     def _map_label_to_tracks():
         label_map = defaultdict(list)
@@ -98,7 +102,8 @@ def normalize_data(data: np.ndarray) -> np.ndarray:
     return data
 
 
-def plot_data(top_tracks, labels):
+def plot_tracks_with_clusters(top_tracks, labels):
+    """Plots tracks by energy and danceability, and color-codes by cluster label."""
 
     def assign_colors(labels):
         unique_labels = set(labels)

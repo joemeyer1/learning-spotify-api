@@ -1,11 +1,11 @@
 #!usr/bin/env python3
 
-from clustering_helpers import cluster_tracks, write_artist_clusters
+from clustering_helpers import cluster_tracks, write_clusters_to_csv
 from data_manager import DataManager
 from music_info import ArtistInfo
 
 
-def main(seed_artist_info: ArtistInfo = ArtistInfo(name='The Beatles', id="3WrFJ7ztbogyGnTHbHJFl2")):
+def main(seed_artist_info: ArtistInfo = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")):
     """Clusters top tracks for seed artist and similar artists, and writes clustering to csv."""
 
     data_manager = DataManager()
@@ -17,7 +17,7 @@ def main(seed_artist_info: ArtistInfo = ArtistInfo(name='The Beatles', id="3WrFJ
     labels = cluster_tracks(top_tracks, min_cluster_size=4)
 
     # plot_data(top_tracks, labels)
-    write_artist_clusters(top_tracks, labels)
+    write_clusters_to_csv(top_tracks, labels)
 
     # get_artist_spreads_over_clusters(top_tracks, labels)
 
