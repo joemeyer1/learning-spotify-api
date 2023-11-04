@@ -1,9 +1,8 @@
 #!usr/bin/env python3
 
 from clustering_helpers import cluster_tracks, write_artist_clusters
-from music_info import ArtistInfo
-
 from data_manager import DataManager
+from music_info import ArtistInfo
 
 
 def main(seed_artist_info: ArtistInfo = ArtistInfo(name='The Beatles', id="3WrFJ7ztbogyGnTHbHJFl2")):

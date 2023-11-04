@@ -5,10 +5,8 @@ import unittest
 
 import numpy as np
 
+from clustering_helpers import cluster_tracks, write_artist_clusters, get_artist_spreads_over_clusters, normalize_data, plot_data
 from data_manager import DataManager
-
-from clustering_helpers import cluster_tracks, write_artist_clusters, get_artist_spreads_over_clusters, normalize_data, \
-    plot_data
 from music_info import ArtistInfo, TrackInfo
 from target_feature_types import target_feature_types
 

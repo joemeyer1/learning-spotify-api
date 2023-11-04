@@ -1,3 +1,6 @@
+#!usr/bin/env python3
+
+
 import os
 from collections import defaultdict, Counter
 from copy import deepcopy
