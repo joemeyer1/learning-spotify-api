@@ -11,7 +11,7 @@ from utilities.music_info import ArtistInfo
 
 
 def get_top_led_zep_tracks_and_feats() -> pd.DataFrame:
-    """Fetches Led Zeppelin top tracks and audio features, and writes data to df."""
+    """Fetches Led Zeppelin top tracks and audio features, and writes data to csv."""
 
     data_manager = DataManager()
     return data_manager.fetch_top_tracks_df(
@@ -21,7 +21,7 @@ def get_top_led_zep_tracks_and_feats() -> pd.DataFrame:
 
 
 def get_similar_artist_tracks_and_feats() -> pd.DataFrame:
-    """Fetches top tracks and their audio features for artists related to Led Zeppelin."""
+    """Fetches top tracks and audio features for artists similar to Led Zeppelin, and writes data to csv."""
 
     data_manager = DataManager()
     led_zep_info = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")
@@ -30,7 +30,7 @@ def get_similar_artist_tracks_and_feats() -> pd.DataFrame:
     return data_manager.fetch_top_tracks_df(artists=artists, filename='tracks.csv')
 
 
-def get_led_zep_ish_tracks_and_feats() -> pd.DataFrame:
+def get_led_zep_and_co_tracks_and_feats() -> pd.DataFrame:
     """Fetches top tracks and their audio features for Led Zeppelin and related artists."""
 
     data_manager = DataManager()
@@ -41,7 +41,7 @@ def get_led_zep_ish_tracks_and_feats() -> pd.DataFrame:
     return data_manager.fetch_top_tracks_df(artists=artists, filename='tracks.csv')
 
 
-def cluster_led_zep_ish_songs() -> pd.DataFrame:
+def cluster_led_zep_and_co_songs() -> pd.DataFrame:
     """Clusters songs by Led Zeppelin and related artists, and writes clusters to csv."""
 
     data_manager = DataManager()
@@ -61,6 +61,7 @@ def cluster_led_zep_ish_songs() -> pd.DataFrame:
     # I run one more HDBSCAN iteration to cluster these outliers.
     # After second HDBSCAN iteration, an outlier cluster may still persist,
     # but in practice this is often ok - if it's not, then lingering outliers may be clustered by another algorithm.
+    # Another alternative to re-clustering outliers is merging them into existing clustering (e.g. with mean linkage).
     labels = cluster_tracks(led_zep_ish_tracks_and_feats, min_cluster_size=4)
 
     return write_clusters_to_csv(led_zep_ish_tracks_and_feats, labels)
