@@ -6,7 +6,8 @@ from typing import Dict
 
 from data_manager import DataManager
 
-from main import cluster_tracks, plot_data, write_artist_clusters, get_artist_spreads, convert_tracks_to_df
+from main import plot_data, convert_tracks_to_df
+from clustering_helpers import cluster_tracks, write_artist_clusters, get_artist_spreads_over_clusters
 from music_info import ArtistInfo
 
 
@@ -79,7 +80,7 @@ def get_num_clusters_per_artist() -> Dict[str, int]:
     plot_data(top_tracks, labels)
     write_artist_clusters(top_tracks, labels)
 
-    artist_spreads = get_artist_spreads(top_tracks, labels)
+    artist_spreads = get_artist_spreads_over_clusters(top_tracks, labels)
     print(f"Artist to Cluster Distribution Table:\n{artist_spreads}")
     num_clusters_per_artist = {artist: len(cluster_spread) for artist, cluster_spread in artist_spreads.items()}
     print(f"Artist to Number of Clusters Map:\n{num_clusters_per_artist}")

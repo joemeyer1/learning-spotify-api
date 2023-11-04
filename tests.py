@@ -7,7 +7,8 @@ import numpy as np
 
 from data_manager import DataManager
 
-from main import normalize_data, convert_tracks_to_df, cluster_tracks, plot_data, write_artist_clusters, get_artist_spreads
+from main import normalize_data, convert_tracks_to_df, plot_data
+from clustering_helpers import cluster_tracks, write_artist_clusters, get_artist_spreads_over_clusters
 from music_info import ArtistInfo, TrackInfo
 from target_feature_types import target_feature_types
 
@@ -82,7 +83,7 @@ class TestSpotifyProj(unittest.TestCase):
         plot_data(top_tracks, labels)
         write_artist_clusters(top_tracks, labels)
 
-        artist_spreads = get_artist_spreads(top_tracks, labels)
+        artist_spreads = get_artist_spreads_over_clusters(top_tracks, labels)
         num_clusters_per_artist = {artist: len(cluster_spread) for artist, cluster_spread in artist_spreads.items()}
 
         self.assertLess(max(num_clusters_per_artist.values()), len(set(labels)))
