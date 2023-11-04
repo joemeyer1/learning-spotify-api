@@ -7,8 +7,8 @@ import numpy as np
 
 from data_manager import DataManager
 
-from main import normalize_data, convert_tracks_to_df, plot_data
-from clustering_helpers import cluster_tracks, write_artist_clusters, get_artist_spreads_over_clusters
+from clustering_helpers import cluster_tracks, write_artist_clusters, get_artist_spreads_over_clusters, normalize_data, \
+    plot_data
 from music_info import ArtistInfo, TrackInfo
 from target_feature_types import target_feature_types
 
@@ -45,17 +45,15 @@ class TestSpotifyProj(unittest.TestCase):
     def test_convert_tracks_to_df(self):
         data_manager = DataManager()
         artists = [ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")]
-        top_tracks = data_manager.get_top_tracks(artists=artists)
-        df = convert_tracks_to_df(top_tracks, 'tracks.csv')
-        self.assertGreater(len(df), 0)
-        self.assertTrue(np.all(df.columns == ['track', 'artist'] + target_feature_types))
+        top_tracks_df = data_manager.get_top_tracks_df(artists=artists, filename='tracks.csv')
+        self.assertGreater(len(top_tracks_df), 0)
+        self.assertTrue(np.all(top_tracks_df.columns == ['track', 'artist'] + target_feature_types))
 
     def test_clustering(self):
         data_manager = DataManager()
         led_zep_info = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")
         artists = [led_zep_info] + data_manager.get_similar_artists(led_zep_info.id)
         top_tracks = data_manager.get_top_tracks(artists=artists)
-        convert_tracks_to_df(top_tracks, 'tracks.csv')
 
         labels = cluster_tracks(top_tracks, min_cluster_size=4)
         self.assertEqual(len(labels), len(top_tracks))
@@ -65,7 +63,6 @@ class TestSpotifyProj(unittest.TestCase):
         led_zep_info = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")
         artists = [led_zep_info] + data_manager.get_similar_artists(led_zep_info.id)
         top_tracks = data_manager.get_top_tracks(artists=artists)
-        convert_tracks_to_df(top_tracks, 'tracks.csv')
 
         labels = cluster_tracks(top_tracks, min_cluster_size=4)
 

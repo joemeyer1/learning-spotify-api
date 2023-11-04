@@ -5,10 +5,14 @@ from typing import List
 
 import numpy as np
 import pandas as pd
+from bokeh.io import show
+from bokeh.models import ColumnDataSource, HoverTool
+from bokeh.palettes import Category20
+from bokeh.plotting import figure
 from sklearn.cluster import HDBSCAN
 
-from main import get_tracks_feats
 from music_info import TrackInfo
+from target_feature_types import target_feature_types
 
 
 def cluster_tracks(tracks: List[TrackInfo], min_cluster_size: int = 4) -> np.ndarray:
@@ -74,3 +78,57 @@ def get_artist_spreads_over_clusters(tracks: List[TrackInfo], labels: np.ndarray
     for track, label in zip(tracks, labels):
         artist_to_clusters[track.artist].append(label)
     return {artist: Counter(distinct_clusters).values() for artist, distinct_clusters in artist_to_clusters.items()}
+
+
+def get_tracks_feats(tracks: List[TrackInfo]) -> np.ndarray:
+    return normalize_data(np.array([track.get_feats(target_feature_types) for track in tracks]))
+
+
+def normalize_data(data: np.ndarray) -> np.ndarray:
+    for col_i in range(data.shape[1]):
+        # normalize cols to have mean=0
+        data[:, col_i] -= np.mean(data[:, col_i])
+
+        # std is meaningful here (e.g. larger spreads matter), so don't normalize it
+        # data[:, col_i] /= np.std(data[:, col_i])
+
+    return data
+
+
+def plot_data(top_tracks, labels):
+
+    def assign_colors(labels):
+        unique_labels = set(labels)
+        available_colors = Category20[20]
+        colors = {}
+        for i, unique_label in enumerate(unique_labels):
+            colors[unique_label] = available_colors[i % len(available_colors)]
+        return colors
+
+    def get_colors(labels):
+        colors = assign_colors(labels)
+        return [colors[label] for label in labels]
+
+    data = {
+            'energy': [track.feats['energy'] for track in top_tracks],
+            'danceability': [track.feats['danceability'] for track in top_tracks],
+            'track': [track.name for track in top_tracks],
+            'artist': [track.artist for track in top_tracks],
+            'label': labels,
+            'color': get_colors(labels)
+    }
+
+    source = ColumnDataSource(data=data)
+
+    # TOOLS="hover,zoom_in,zoom_out,box_zoom,undo,redo,reset,examine,help"
+
+    p = figure()
+    p.circle(x='energy', y='danceability', source=source, size=10, fill_color='color')
+    p.add_tools(HoverTool(tooltips=[
+        ("track", "@track"),
+        ("artist", "@artist"),
+        ("cluster_ix", "@label"),
+        ("energy", "@energy"),
+        ("danceability", "@danceability"),
+    ]))
+    show(p)

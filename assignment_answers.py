@@ -6,8 +6,7 @@ from typing import Dict
 
 from data_manager import DataManager
 
-from main import plot_data, convert_tracks_to_df
-from clustering_helpers import cluster_tracks, write_artist_clusters, get_artist_spreads_over_clusters
+from clustering_helpers import cluster_tracks, write_artist_clusters, get_artist_spreads_over_clusters, plot_data
 from music_info import ArtistInfo
 
 
@@ -15,8 +14,10 @@ def get_top_led_zep_tracks_and_feats() -> pd.DataFrame:
     """Fetches Led Zeppelin top tracks and audio features, and writes data to df."""
 
     data_manager = DataManager()
-    top_tracks = data_manager.get_top_tracks(artists=[ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")])
-    return convert_tracks_to_df(top_tracks, 'led_zep_tracks.csv')
+    return data_manager.get_top_tracks_df(
+        artists=[ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")],
+        filename='led_zep_tracks.csv',
+    )
 
 
 def get_similar_artist_tracks_and_feats() -> pd.DataFrame:
@@ -26,8 +27,7 @@ def get_similar_artist_tracks_and_feats() -> pd.DataFrame:
     led_zep_info = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")
     artists = data_manager.get_similar_artists(led_zep_info.id)
     print(f"led zep -ish artists: {[artist.name for artist in artists]}\n\n")
-    top_tracks = data_manager.get_top_tracks(artists=artists)
-    return convert_tracks_to_df(top_tracks, 'tracks.csv')
+    return data_manager.get_top_tracks_df(artists=artists, filename='tracks.csv')
 
 
 def get_led_zep_ish_tracks_and_feats() -> pd.DataFrame:
@@ -38,8 +38,7 @@ def get_led_zep_ish_tracks_and_feats() -> pd.DataFrame:
     artists = [led_zep_info] + data_manager.get_similar_artists(led_zep_info.id)
     print(f"led zep -ish artists: {[artist.name for artist in artists[1:]]}\n\n")
 
-    top_tracks = data_manager.get_top_tracks(artists=artists)
-    return convert_tracks_to_df(top_tracks, 'tracks.csv')
+    return data_manager.get_top_tracks_df(artists=artists, filename='tracks.csv')
 
 
 def cluster_led_zep_ish_songs() -> pd.DataFrame:
@@ -85,8 +84,6 @@ def get_num_clusters_per_artist() -> Dict[str, int]:
     num_clusters_per_artist = {artist: len(cluster_spread) for artist, cluster_spread in artist_spreads.items()}
     print(f"Artist to Number of Clusters Map:\n{num_clusters_per_artist}")
     return num_clusters_per_artist
-
-
 
 
 

@@ -4,6 +4,8 @@
 
 import sklearn
 
+import pandas as pd
+
 import os
 import json
 from typing import Dict, Any, List, Optional
@@ -31,6 +33,10 @@ class DataManager:
         self.access_token = self._read_json('access_token.json')['access_token']
         return self.access_token
 
+    def get_top_tracks_df(self, artists: List[ArtistInfo], filename: Optional[str] = None) -> pd.DataFrame:
+        top_tracks = self.get_top_tracks(artists)
+        return self._convert_tracks_to_df(tracks=top_tracks, filename=filename)
+
     def get_top_tracks(self, artists: List[ArtistInfo]) -> List[TrackInfo]:
         """Returns artists' top tracks."""
 
@@ -47,7 +53,6 @@ class DataManager:
                     output_filename=f"track_{track_ids}feats",
                     data_args=f"audio-features?ids={track_ids}",
                 )["audio_features"]
-                print(tracks_feats)
                 target_feats = [{feat_type: track_feats[feat_type] for feat_type in target_feature_types} for track_feats in tracks_feats]
                 return target_feats
 
@@ -98,3 +103,16 @@ class DataManager:
     def _read_json(filename):
         with open(filename, 'r') as f:
             return json.loads(f.read())
+
+    @staticmethod
+    def _convert_tracks_to_df(tracks: List[TrackInfo], filename: Optional[str] = None) -> pd.DataFrame:
+        """Returns a df of tracks, and writes to csv if filename is passed."""
+
+        data = []
+        for track in tracks:
+            row = [track.name, track.artist] + track.get_feats(target_feature_types)
+            data.append(row)
+        df = pd.DataFrame(data, columns=['track', 'artist'] + target_feature_types)
+        if filename is not None:
+            df.to_csv(filename)
+        return df
