@@ -10,8 +10,8 @@ def main(seed_artist_info: ArtistInfo = ArtistInfo(name='The Beatles', id="3WrFJ
 
     data_manager = DataManager()
 
-    artists = [seed_artist_info] + data_manager.get_similar_artists(seed_artist_info.id)
-    top_tracks = data_manager.get_top_tracks(artists=artists)
+    artists = [seed_artist_info] + data_manager.fetch_similar_artists(seed_artist_info.id)
+    top_tracks = data_manager.fetch_top_tracks(artists=artists)
     # convert_tracks_to_df(top_tracks, 'top_tracks.csv')  # write to df
 
     labels = cluster_tracks(top_tracks, min_cluster_size=4)

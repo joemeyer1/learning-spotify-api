@@ -29,23 +29,23 @@ class DataManager:
         self.access_token = self._read_json('access_token.json')['access_token']
         return self.access_token
 
-    def get_top_tracks_df(self, artists: List[ArtistInfo], filename: Optional[str] = None) -> pd.DataFrame:
-        top_tracks = self.get_top_tracks(artists)
+    def fetch_top_tracks_df(self, artists: List[ArtistInfo], filename: Optional[str] = None) -> pd.DataFrame:
+        top_tracks = self.fetch_top_tracks(artists)
         return self._convert_tracks_to_df(tracks=top_tracks, filename=filename)
 
-    def get_top_tracks(self, artists: List[ArtistInfo]) -> List[TrackInfo]:
+    def fetch_top_tracks(self, artists: List[ArtistInfo]) -> List[TrackInfo]:
         """Returns artists' top tracks."""
 
-        def _get_top_tracks_for_artist(artist: ArtistInfo) -> List[TrackInfo]:
+        def _fetch_top_tracks_for_artist(artist: ArtistInfo) -> List[TrackInfo]:
             """Returns top tracks for single artist."""
 
-            top_tracks = self._get_data(
+            top_tracks = self._fetch_data(
                 output_filename=f"{artist.id}_top_tracks.json",
                 data_args=f"artists/{artist.id}/top-tracks?market=US",
             )
 
-            def _get_feats(track_ids: str) -> List[Dict[str, Any]]:
-                tracks_feats = self._get_data(
+            def _fetch_feats(track_ids: str) -> List[Dict[str, Any]]:
+                tracks_feats = self._fetch_data(
                     output_filename=f"track_{track_ids}feats",
                     data_args=f"audio-features?ids={track_ids}",
                 )["audio_features"]
@@ -62,19 +62,19 @@ class DataManager:
                 )
                 tracks_infos.append(track_info)
                 track_ids += f"{track['id']},"
-            tracks_feats = _get_feats(track_ids)
+            tracks_feats = _fetch_feats(track_ids)
             for i, track_info in enumerate(tracks_infos):
                 tracks_infos[i].feats = tracks_feats[i]
             return tracks_infos
 
         top_tracks_infos = []
         for artist in artists:
-            top_tracks_info = _get_top_tracks_for_artist(artist=artist)
+            top_tracks_info = _fetch_top_tracks_for_artist(artist=artist)
             top_tracks_infos += top_tracks_info
         return top_tracks_infos
 
-    def get_similar_artists(self, artist_id: str) -> List[ArtistInfo]:
-        similar_artists = self._get_data(output_filename='related_artists', data_args=f'artists/{artist_id}/related-artists')
+    def fetch_similar_artists(self, artist_id: str) -> List[ArtistInfo]:
+        similar_artists = self._fetch_data(output_filename='related_artists', data_args=f'artists/{artist_id}/related-artists')
         similar_artists_info = [
             ArtistInfo(
                 name=similar_artist['name'],
@@ -83,7 +83,7 @@ class DataManager:
         ]
         return similar_artists_info
 
-    def _get_data(self, output_filename: str, data_args: str = '') -> Dict[str, Any]:
+    def _fetch_data(self, output_filename: str, data_args: str = '') -> Dict[str, Any]:
         """Fetches and returns data."""
 
         os.system(f"curl --request GET \

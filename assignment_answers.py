@@ -14,7 +14,7 @@ def get_top_led_zep_tracks_and_feats() -> pd.DataFrame:
     """Fetches Led Zeppelin top tracks and audio features, and writes data to df."""
 
     data_manager = DataManager()
-    return data_manager.get_top_tracks_df(
+    return data_manager.fetch_top_tracks_df(
         artists=[ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")],
         filename='led_zep_tracks.csv',
     )
@@ -25,9 +25,9 @@ def get_similar_artist_tracks_and_feats() -> pd.DataFrame:
 
     data_manager = DataManager()
     led_zep_info = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")
-    artists = data_manager.get_similar_artists(led_zep_info.id)
+    artists = data_manager.fetch_similar_artists(led_zep_info.id)
     print(f"led zep -ish artists: {[artist.name for artist in artists]}\n\n")
-    return data_manager.get_top_tracks_df(artists=artists, filename='tracks.csv')
+    return data_manager.fetch_top_tracks_df(artists=artists, filename='tracks.csv')
 
 
 def get_led_zep_ish_tracks_and_feats() -> pd.DataFrame:
@@ -35,10 +35,10 @@ def get_led_zep_ish_tracks_and_feats() -> pd.DataFrame:
 
     data_manager = DataManager()
     led_zep_info = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")
-    artists = [led_zep_info] + data_manager.get_similar_artists(led_zep_info.id)
+    artists = [led_zep_info] + data_manager.fetch_similar_artists(led_zep_info.id)
     print(f"led zep -ish artists: {[artist.name for artist in artists[1:]]}\n\n")
 
-    return data_manager.get_top_tracks_df(artists=artists, filename='tracks.csv')
+    return data_manager.fetch_top_tracks_df(artists=artists, filename='tracks.csv')
 
 
 def cluster_led_zep_ish_songs() -> pd.DataFrame:
@@ -46,10 +46,10 @@ def cluster_led_zep_ish_songs() -> pd.DataFrame:
 
     data_manager = DataManager()
     led_zep_info = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")
-    artists = [led_zep_info] + data_manager.get_similar_artists(led_zep_info.id)
+    artists = [led_zep_info] + data_manager.fetch_similar_artists(led_zep_info.id)
     print(f"led zep -ish artists: {[artist.name for artist in artists[1:]]}\n\n")
 
-    led_zep_ish_tracks_and_feats = data_manager.get_top_tracks(artists=artists)
+    led_zep_ish_tracks_and_feats = data_manager.fetch_top_tracks(artists=artists)
 
     # I'm using HDBSCAN, which builds MST then deletes weakest edges until clusters are separated.
     # HDBSCAN can handle weirdly shaped clusters of different sizes, and requires minimal hyper-parameter tuning.
@@ -71,8 +71,8 @@ def get_num_clusters_per_artist() -> Dict[str, int]:
 
     data_manager = DataManager()
     led_zep_info = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")
-    artists = [led_zep_info] + data_manager.get_similar_artists(led_zep_info.id)
-    top_tracks = data_manager.get_top_tracks(artists=artists)
+    artists = [led_zep_info] + data_manager.fetch_similar_artists(led_zep_info.id)
+    top_tracks = data_manager.fetch_top_tracks(artists=artists)
 
     labels = cluster_tracks(tracks=top_tracks, min_cluster_size=4)
 
