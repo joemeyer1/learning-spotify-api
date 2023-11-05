@@ -10,7 +10,7 @@ from utilities.data_manager import DataManager
 from utilities.music_info import ArtistInfo
 
 
-def cluster_tracks_artist_and_co(seed_artist_info: ArtistInfo = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")):
+def cluster_artist_and_co_tracks(seed_artist_info: ArtistInfo = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")):
     """Clusters top tracks for seed artist and similar artists, and writes clustering to csv."""
 
     data_manager = DataManager()
@@ -72,4 +72,4 @@ def _get_num_clusters_per_artist_old_clusters(
 
 
 if __name__ == '__main__':
-    cluster_tracks_artist_and_co()
+    cluster_artist_and_co_tracks()
