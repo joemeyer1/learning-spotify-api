@@ -27,8 +27,8 @@ the audio features for each of those tracks.
     I first normalized data so that each column would have a mean of 0.
     I chose not to normalize standard deviation, because the data spread matters here and clusterings yielded by normalizing std dev were disappointing.
     
-    I set min_cluster_size to 4 because intuitively a set of 4 songs is about the minimum required to observe/assess meaningful patterns.
-    Given min_cluster_size = 4, the precise number of clusters yielded by HDBSCAN may vary. A recent run yielded 24 clusters (after secondary step - see below).
+    I set `min_cluster_size` to 4 because intuitively a set of 4 songs is about the minimum required to observe/assess meaningful patterns.
+    Given `min_cluster_size = 4`, the precise number of clusters yielded by HDBSCAN may vary. A recent run yielded 24 clusters (after secondary step - see below).
     After initial HDBSCAN clustering, outliers are lumped together in their own cluster (labelled '-1'). I run one more HDBSCAN iteration to cluster these outliers.<br><br>
     
     The clustering yielded by this algorithm intuitively makes sense to me.
