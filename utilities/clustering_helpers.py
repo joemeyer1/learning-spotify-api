@@ -14,7 +14,8 @@ from bokeh.palettes import Category20
 from bokeh.plotting import figure
 from sklearn.cluster import HDBSCAN
 
-from utilities.music_info import TrackInfo
+from utilities.data_manager import DataManager
+from utilities.music_info import TrackInfo, ArtistInfo
 from utilities.target_feature_types import target_feature_types
 
 
@@ -142,7 +143,24 @@ def plot_tracks_with_clusters(top_tracks: List[TrackInfo], labels: np.ndarray):
     show(p)
 
 
-def read_clusters(clusters_filename: str, tracks: List[TrackInfo]) -> np.ndarray:
+def read_clusters(
+        clusters_filename: str = 'saved_clusters.csv',
+        seed_artist_info: ArtistInfo = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp"),
+) -> np.ndarray:
+    """Fetches tracks and reads clusters."""
+
+    data_manager = DataManager()
+
+    artists = [seed_artist_info] + data_manager.fetch_similar_artists(seed_artist_info.id)
+    top_tracks = data_manager.fetch_top_tracks(artists=artists)
+
+    labels = _read_clusters_from_tracks(clusters_filename=clusters_filename, tracks=top_tracks)
+
+    return labels
+
+
+def _read_clusters_from_tracks(clusters_filename: str, tracks: List[TrackInfo]) -> np.ndarray:
+    """Reads clusters given the tracks clustered in them."""
 
     track_name_to_ix = {track.name: ix for ix, track in enumerate(tracks)}
     clusters_df = pd.read_csv(clusters_filename, index_col='Unnamed: 0')
@@ -157,3 +175,29 @@ def read_clusters(clusters_filename: str, tracks: List[TrackInfo]) -> np.ndarray
     return cluster_labels
 
 
+def _get_artist_spread_old_clusters(
+        clusters_filename: str = 'saved_clusters.csv',
+        seed_artist_info: ArtistInfo = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp"),
+) -> Dict[str, List[int]]:
+    """Maps each artist to the distribution of their tracks over clusters."""
+
+    data_manager = DataManager()
+
+    artists = [seed_artist_info] + data_manager.fetch_similar_artists(seed_artist_info.id)
+    top_tracks = data_manager.fetch_top_tracks(artists=artists)
+
+    labels = _read_clusters_from_tracks(clusters_filename=clusters_filename, tracks=top_tracks)
+
+    artist_spreads = get_artist_spreads_over_clusters(top_tracks, labels)
+    return artist_spreads
+
+
+def _get_num_clusters_per_artist_old_clusters(
+        clusters_filename: str = 'saved_clusters.csv',
+        seed_artist_info: ArtistInfo = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp"),
+) -> Dict[str, int]:
+    """Returns a map of the number of clusters each artist belongs to."""
+
+    artist_spreads = _get_artist_spread_old_clusters(clusters_filename=clusters_filename, seed_artist_info=seed_artist_info)
+    num_clusters_per_artist = {artist: len(cluster_spread) for artist, cluster_spread in artist_spreads.items()}
+    return num_clusters_per_artist
