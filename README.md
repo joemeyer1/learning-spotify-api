@@ -63,27 +63,55 @@ the audio features for each of those tracks.
     - see `assignment_answers.get_num_clusters_per_artist()`<br>
     
     In this model, the number of clusters per artist is:
-    
-    artist_to_num_of_home_clusters = {<br>
-            'Led Zeppelin': 9,<br>
-            'Jimi Hendrix': 7,<br>
-            'The Doors': 6,<br>
-            'Deep Purple': 8,<br>
-            'The Who': 9,<br>
-            'Black Sabbath': 7,<br>
-            'Cream': 6,<br>
-            'Lynyrd Skynyrd': 9,<br>
-            'Janis Joplin': 9,<br>
-            'The Rolling Stones': 9,<br>
-            'ZZ Top': 10,<br>
-            'Pink Floyd': 9,<br>
-            'Van Halen': 8,<br>
-            'Jim Morrison': 7,<br>
-            'Rush': 9,<br>
-            'Ozzy Osbourne': 6,<br>
-            'Robert Plant': 9,<br>
-            'Steppenwolf': 9,<br>
-            'Soundgarden': 8,<br>
-            'The Animals': 7,<br>
-            'Blue Öyster Cult': 9,<br>
+    ```
+    artist_to_num_of_home_clusters = {
+            'Led Zeppelin': 9,
+            'Jimi Hendrix': 7,
+            'The Doors': 6,
+            'Deep Purple': 8,
+            'The Who': 9,
+            'Black Sabbath': 7,
+            'Cream': 6,
+            'Lynyrd Skynyrd': 9,
+            'Janis Joplin': 9,
+            'The Rolling Stones': 9,
+            'ZZ Top': 10,
+            'Pink Floyd': 9,
+            'Van Halen': 8,
+            'Jim Morrison': 7,
+            'Rush': 9,
+            'Ozzy Osbourne': 6,
+            'Robert Plant': 9,
+            'Steppenwolf': 9,
+            'Soundgarden': 8,
+            'The Animals': 7,
+            'Blue Öyster Cult': 9,
     }
+    ```
+   
+   More specifically, the distribution of each artist's songs over clusters is
+   ```
+    {
+        'Led Zeppelin': [1, 1, 1, 2, 1, 1, 1, 1, 1],
+        'Jimi Hendrix': [1, 2, 2, 1, 1, 2, 1],
+        'The Doors': [1, 1, 3, 1, 3, 1],
+        'Deep Purple': [1, 3, 1, 1, 1, 1, 1, 1],
+        'The Who': [1, 1, 1, 2, 1, 1, 1, 1, 1],
+        'Black Sabbath': [1, 3, 2, 1, 1, 1, 1],
+        'Cream': [1, 1, 4, 1, 2, 1],
+        'Lynyrd Skynyrd': [1, 1, 2, 1, 1, 1, 1, 1, 1],
+        'Janis Joplin': [1, 1, 2, 1, 1, 1, 1, 1, 1],
+        'The Rolling Stones': [1, 1, 1, 2, 1, 1, 1, 1, 1],
+        'ZZ Top': [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        'Pink Floyd': [1, 1, 2, 1, 1, 1, 1, 1, 1],
+        'Van Halen': [1, 1, 2, 1, 2, 1, 1, 1],
+        'Jim Morrison': [1, 3, 1, 2, 1, 1, 1],
+        'Rush': [1, 1, 1, 1, 1, 1, 1, 1, 2],
+        'Ozzy Osbourne': [3, 1, 1, 1, 2, 2],
+        'Robert Plant': [1, 2, 1, 1, 1, 1, 1, 1, 1],
+        'Steppenwolf': [1, 1, 1, 2, 1, 1, 1, 1, 1],
+        'Soundgarden': [3, 1, 1, 1, 1, 1, 1, 1],
+        'The Animals': [1, 2, 3, 1, 1, 1, 1],
+        'Blue Öyster Cult': [1, 2, 1, 1, 1, 1, 1, 1, 1],
+    }
+   ``` 

@@ -4,7 +4,7 @@
 import os
 from collections import defaultdict, Counter
 from copy import deepcopy
-from typing import List
+from typing import List, Dict
 
 import numpy as np
 import pandas as pd
@@ -78,13 +78,13 @@ def write_clusters_to_csv(top_tracks, labels, clusters_filename='clusters.csv'):
     return artist_clusters_df
 
 
-def get_artist_spreads_over_clusters(tracks: List[TrackInfo], labels: np.ndarray):
+def get_artist_spreads_over_clusters(tracks: List[TrackInfo], labels: np.ndarray) -> Dict[str, List[int]]:
 
     artist_to_clusters = defaultdict(list)
 
     for track, label in zip(tracks, labels):
         artist_to_clusters[track.artist].append(label)
-    return {artist: Counter(distinct_clusters).values() for artist, distinct_clusters in artist_to_clusters.items()}
+    return {artist: list(Counter(distinct_clusters).values()) for artist, distinct_clusters in artist_to_clusters.items()}
 
 
 def get_tracks_feats(tracks: List[TrackInfo]) -> np.ndarray:
@@ -140,3 +140,20 @@ def plot_tracks_with_clusters(top_tracks, labels):
         ("danceability", "@danceability"),
     ]))
     show(p)
+
+
+def read_clusters(clusters_filename: str, tracks: List[TrackInfo]) -> np.ndarray:
+
+    track_name_to_ix = {track.name: ix for ix, track in enumerate(tracks)}
+    clusters_df = pd.read_csv(clusters_filename, index_col='Unnamed: 0')
+    cluster_labels = np.zeros(len(tracks), dtype=int)
+    for cluster_i in clusters_df.index:
+        for track in clusters_df.loc[cluster_i]:
+            if type(track) is str:
+                track_name = track.split(", '")[0][2: -1]
+                track_ix = track_name_to_ix.get(track_name, None)
+                assert track_ix is not None
+                cluster_labels[track_ix] = int(cluster_i)
+    return cluster_labels
+
+
