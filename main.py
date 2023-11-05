@@ -5,7 +5,7 @@ from typing import Dict, List
 
 import numpy as np
 
-from utilities.clustering_helpers import cluster_tracks, write_clusters_to_csv, read_clusters, get_artist_spreads_over_clusters
+from utilities.clustering_helpers import cluster_tracks, write_clusters_to_csv, read_clusters, get_artist_spreads_over_clusters, plot_tracks_with_clusters
 from utilities.data_manager import DataManager
 from utilities.music_info import ArtistInfo
 
@@ -21,7 +21,7 @@ def cluster_artist_and_co_tracks(seed_artist_info: ArtistInfo = ArtistInfo(name=
 
     labels = cluster_tracks(top_tracks, min_cluster_size=4)
 
-    # plot_data(top_tracks, labels)
+    plot_tracks_with_clusters(top_tracks, labels)
     write_clusters_to_csv(top_tracks, labels)
 
     # get_artist_spreads_over_clusters(top_tracks, labels)
