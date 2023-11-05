@@ -19,12 +19,12 @@ the audio features for each of those tracks.
 
     - See `assignment_answers.cluster_led_zep_and_co_songs()`<br>
     
-    I used HDBSCAN, which builds  Minimum Spanning Tree (MST) then deletes weakest edges until clusters are separated.
+    I used HDBSCAN, which builds a Minimum Spanning Tree (MST) then deletes weakest edges until clusters are separated.
     HDBSCAN can handle weirdly shaped clusters of different sizes, and requires minimal hyper-parameter tuning.
     In practice I find HDBSCAN often aligns better with my intuition compared with other clustering algorithms.<br><br>
     
     I first normalized data so that each column would have a mean of 0.
-    I chose not to normalize standard deviation, because the clusterings yielded by normalizing it were disappointing.
+    I chose not to normalize standard deviation, because the data spread matters here and clusterings yielded by normalizing std dev were disappointing.
     
     I set min_cluster_size to 4 because intuitively a set of 4 songs is about the minimum required to observe/assess meaningful patterns.
     Given min_cluster_size = 4, the precise number of clusters yielded by HDBSCAN may vary. A recent run yielded 24 clusters (after secondary step - see below).
