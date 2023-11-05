@@ -1,5 +1,6 @@
 # learning-spotify-api-private
- rough draft - learning spotify api assignment
+Solutions to spotify api assignment for WMG. Solution methods are implemented in `assignment_answers.py`, and solution files 
+are uploaded in `assignment_answer_files`.
 
 1. You should get the top tracks for Led Zeppelin, and the audio features for all those top
 tracks.

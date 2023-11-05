@@ -16,7 +16,7 @@ def get_top_led_zep_tracks_and_feats() -> pd.DataFrame:
     data_manager = DataManager()
     return data_manager.fetch_top_tracks_df(
         artists=[ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")],
-        filename='led_zep_tracks.csv',
+        filename='assignment_answer_files/led_zep_tracks.csv',
     )
 
 
@@ -27,7 +27,7 @@ def get_similar_artist_tracks_and_feats() -> pd.DataFrame:
     led_zep_info = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")
     artists = data_manager.fetch_similar_artists(led_zep_info.id)
     print(f"led zep -ish artists: {[artist.name for artist in artists]}\n\n")
-    return data_manager.fetch_top_tracks_df(artists=artists, filename='tracks.csv')
+    return data_manager.fetch_top_tracks_df(artists=artists, filename='assignment_answer_files/led_zep_ish_tracks.csv')
 
 
 def get_led_zep_and_co_tracks_and_feats() -> pd.DataFrame:
@@ -38,7 +38,7 @@ def get_led_zep_and_co_tracks_and_feats() -> pd.DataFrame:
     artists = [led_zep_info] + data_manager.fetch_similar_artists(led_zep_info.id)
     print(f"led zep -ish artists: {[artist.name for artist in artists[1:]]}\n\n")
 
-    return data_manager.fetch_top_tracks_df(artists=artists, filename='tracks.csv')
+    return data_manager.fetch_top_tracks_df(artists=artists, filename='assignment_answer_files/led_zep_and_co_tracks.csv')
 
 
 def cluster_led_zep_and_co_songs() -> pd.DataFrame:
@@ -87,11 +87,9 @@ def get_num_clusters_per_artist() -> Dict[str, int]:
     return num_clusters_per_artist
 
 
-
-
-
-
-
-
-
-
+if __name__ == '__main__':
+    get_top_led_zep_tracks_and_feats()
+    get_similar_artist_tracks_and_feats()
+    get_led_zep_and_co_tracks_and_feats()
+    cluster_led_zep_and_co_songs()
+    get_num_clusters_per_artist()
