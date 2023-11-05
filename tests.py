@@ -1,6 +1,7 @@
 #!usr/bin/env python3
 
 
+import os
 import unittest
 
 import numpy as np
@@ -68,7 +69,7 @@ class TestSpotifyProj(unittest.TestCase):
         artist_clusters_df = write_clusters_to_csv(top_tracks, labels)
         self.assertEqual(len(artist_clusters_df), len(set(labels)))
 
-    def test_artist_spreads(self):
+    def test_clustering_scatterplot(self):
         data_manager = DataManager()
         led_zep_info = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")
         artists = [led_zep_info] + data_manager.fetch_similar_artists(led_zep_info.id)
@@ -77,7 +78,15 @@ class TestSpotifyProj(unittest.TestCase):
         labels = cluster_tracks(tracks=top_tracks, min_cluster_size=4)
 
         plot_tracks_with_clusters(top_tracks, labels)
-        write_clusters_to_csv(top_tracks, labels)
+        self.assertTrue(os.path.exists('tests.html'))
+
+    def test_artist_spreads(self):
+        data_manager = DataManager()
+        led_zep_info = ArtistInfo(name='Led Zeppelin', id="36QJpDe2go2KgaRleHCDTp")
+        artists = [led_zep_info] + data_manager.fetch_similar_artists(led_zep_info.id)
+        top_tracks = data_manager.fetch_top_tracks(artists=artists)
+
+        labels = cluster_tracks(tracks=top_tracks, min_cluster_size=4)
 
         artist_spreads = get_artist_spreads_over_clusters(top_tracks, labels)
         num_clusters_per_artist = {artist: len(cluster_spread) for artist, cluster_spread in artist_spreads.items()}

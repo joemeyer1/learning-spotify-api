@@ -96,7 +96,7 @@ class DataManager:
         return data
 
     @staticmethod
-    def _read_json(filename):
+    def _read_json(filename: str):
         with open(filename, 'r') as f:
             return json.loads(f.read())
 

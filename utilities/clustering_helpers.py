@@ -59,7 +59,7 @@ def cluster_tracks(tracks: List[TrackInfo], min_cluster_size: int = 4) -> np.nda
     return labels
 
 
-def write_clusters_to_csv(top_tracks, labels, clusters_filename='clusters.csv'):
+def write_clusters_to_csv(top_tracks: List[TrackInfo], labels: np.ndarray, clusters_filename: str = 'clusters.csv'):
 
     def _map_label_to_tracks():
         label_map = defaultdict(list)
@@ -102,7 +102,7 @@ def normalize_data(data: np.ndarray) -> np.ndarray:
     return data
 
 
-def plot_tracks_with_clusters(top_tracks, labels):
+def plot_tracks_with_clusters(top_tracks: List[TrackInfo], labels: np.ndarray):
     """Plots tracks by energy and danceability, and color-codes by cluster label."""
 
     def assign_colors(labels):
@@ -113,7 +113,7 @@ def plot_tracks_with_clusters(top_tracks, labels):
             colors[unique_label] = available_colors[i % len(available_colors)]
         return colors
 
-    def get_colors(labels):
+    def get_colors(labels: np.ndarray):
         colors = assign_colors(labels)
         return [colors[label] for label in labels]
 
