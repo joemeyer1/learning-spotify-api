@@ -1,4 +1,4 @@
-# learning-spotify-api-private
+# learning-spotify-api
 Solutions to spotify api assignment for WMG. Solution methods are implemented in `assignment_answers.py`, and solution files 
 are uploaded in `assignment_answer_files`.
 
