@@ -16,7 +16,8 @@ the audio features for each of those tracks.
 
     - see `assignment_answers.get_led_zep_and_co_tracks_and_feats()`<br><br>
 
-4. Use one clustering technique to identify clusters of similar songs, 
+4. Use one clustering technique to identify clusters of similar songs, and make a
+recommendation for the optimal number of clusters from that technique (along with your reasons in the comments).
 
     - See `assignment_answers.cluster_led_zep_and_co_songs()`<br>
     
