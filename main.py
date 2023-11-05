@@ -17,14 +17,11 @@ def cluster_artist_and_co_tracks(seed_artist_info: ArtistInfo = ArtistInfo(name=
 
     artists = [seed_artist_info] + data_manager.fetch_similar_artists(seed_artist_info.id)
     top_tracks = data_manager.fetch_top_tracks(artists=artists)
-    # convert_tracks_to_df(top_tracks, 'top_tracks.csv')  # write to df
 
     labels = cluster_tracks(top_tracks, min_cluster_size=4)
 
     plot_tracks_with_clusters(top_tracks, labels)
     write_clusters_to_csv(top_tracks, labels)
-
-    # get_artist_spreads_over_clusters(top_tracks, labels)
 
 
 def _read_old_clusters(
@@ -35,7 +32,6 @@ def _read_old_clusters(
 
     artists = [seed_artist_info] + data_manager.fetch_similar_artists(seed_artist_info.id)
     top_tracks = data_manager.fetch_top_tracks(artists=artists)
-    # convert_tracks_to_df(top_tracks, 'top_tracks.csv')  # write to df
 
     labels = read_clusters(clusters_filename=clusters_filename, tracks=top_tracks)
 
@@ -52,7 +48,6 @@ def _get_artist_spread_old_clusters(
 
     artists = [seed_artist_info] + data_manager.fetch_similar_artists(seed_artist_info.id)
     top_tracks = data_manager.fetch_top_tracks(artists=artists)
-    # convert_tracks_to_df(top_tracks, 'top_tracks.csv')  # write to df
 
     labels = read_clusters(clusters_filename=clusters_filename, tracks=top_tracks)
 
