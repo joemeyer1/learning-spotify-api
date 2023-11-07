@@ -26,7 +26,7 @@ class ClusteringManager:
 
     def __init__(self, tracks: List[TrackInfo]):
         self.tracks = tracks
-        self.labels = None  # we'll initialize this upon "cluster_tracks()" step
+        self.labels = None  # we'll initialize this upon "cluster_tracks()" or "read_clusters()" step
 
     def cluster_tracks(self, min_cluster_size: int = 4) -> np.ndarray:
         """Clusters tracks according to their features.
@@ -66,6 +66,30 @@ class ClusteringManager:
 
         raw_labels = _cluster_and_get_labels(tracks=self.tracks)
         self.labels = _secondary_cluster(tracks=self.tracks, labels=raw_labels)
+        return self.labels
+
+    def read_clusters(
+            self,
+            clusters_filename: str = 'saved_clusters.csv',
+    ) -> np.ndarray:
+        """Fetches tracks and reads clusters."""
+
+        def _read_clusters_from_tracks() -> np.ndarray:
+            """Reads clusters given the tracks clustered in them."""
+
+            track_name_to_ix = {track.name: ix for ix, track in enumerate(self.tracks)}
+            clusters_df = pd.read_csv(clusters_filename, index_col='Unnamed: 0')
+            cluster_labels = np.zeros(len(self.tracks), dtype=int)
+            for cluster_i in clusters_df.index:
+                for track in clusters_df.loc[cluster_i]:
+                    if type(track) is str:
+                        track_name = track.split(", '")[0][2: -1]
+                        track_ix = track_name_to_ix.get(track_name, None)
+                        assert track_ix is not None
+                        cluster_labels[track_ix] = int(cluster_i)
+            return cluster_labels
+
+        self.labels = _read_clusters_from_tracks()
         return self.labels
 
     def write_clusters_to_csv(self, clusters_filename: str = 'clusters.csv') -> pd.DataFrame:
@@ -153,30 +177,6 @@ class ClusteringManager:
             # data[:, col_i] /= np.std(data[:, col_i])
 
         return data
-
-    def read_clusters(
-            self,
-            clusters_filename: str = 'saved_clusters.csv',
-    ) -> np.ndarray:
-        """Fetches tracks and reads clusters."""
-
-        self.labels = self._read_clusters_from_tracks(clusters_filename=clusters_filename)
-        return self.labels
-
-    def _read_clusters_from_tracks(self, clusters_filename: str) -> np.ndarray:
-        """Reads clusters given the tracks clustered in them."""
-
-        track_name_to_ix = {track.name: ix for ix, track in enumerate(self.tracks)}
-        clusters_df = pd.read_csv(clusters_filename, index_col='Unnamed: 0')
-        cluster_labels = np.zeros(len(self.tracks), dtype=int)
-        for cluster_i in clusters_df.index:
-            for track in clusters_df.loc[cluster_i]:
-                if type(track) is str:
-                    track_name = track.split(", '")[0][2: -1]
-                    track_ix = track_name_to_ix.get(track_name, None)
-                    assert track_ix is not None
-                    cluster_labels[track_ix] = int(cluster_i)
-        return cluster_labels
 
     def _get_artist_spread_old_clusters(
             self,
