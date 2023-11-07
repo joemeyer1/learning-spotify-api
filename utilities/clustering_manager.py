@@ -14,7 +14,7 @@ from bokeh.palettes import Category20
 from bokeh.plotting import figure
 from sklearn.cluster import HDBSCAN
 
-from utilities.music_info import TrackInfo, ArtistInfo
+from utilities.music_info import TrackInfo
 from utilities.target_feature_types import target_feature_types
 
 
