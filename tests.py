@@ -6,7 +6,7 @@ import unittest
 
 import numpy as np
 
-from utilities.clustering_helpers import cluster_tracks, write_clusters_to_csv, get_artist_spreads_over_clusters, normalize_data, plot_tracks_with_clusters
+from utilities.clustering_manager import ClusteringManager
 from utilities.data_manager import DataManager
 from utilities.music_info import ArtistInfo, TrackInfo
 from utilities.target_feature_types import target_feature_types
@@ -44,7 +44,7 @@ class TestSpotifyProj(unittest.TestCase):
     def test_normalization(self):
         x = np.array([[1, 2, 3],
                       [4, 5, 6.]])
-        norm_x = normalize_data(x)
+        norm_x = ClusteringManager.normalize_data(x)
         # currently we normalize mean to 0 but we don't normalize std
         self.assertTrue(np.all(norm_x == np.array([[-1.5, -1.5, -1.5],
                                                    [1.5, 1.5, 1.5]])))
@@ -55,7 +55,8 @@ class TestSpotifyProj(unittest.TestCase):
         artists = [led_zep_info] + data_manager.fetch_similar_artists(led_zep_info.id)
         top_tracks = data_manager.fetch_top_tracks(artists=artists)
 
-        labels = cluster_tracks(top_tracks, min_cluster_size=4)
+        clustering_manager = ClusteringManager(tracks=top_tracks)
+        labels = clustering_manager.cluster_tracks(min_cluster_size=4)
         self.assertEqual(len(labels), len(top_tracks))
 
     def test_cluster_writing(self):
@@ -64,9 +65,10 @@ class TestSpotifyProj(unittest.TestCase):
         artists = [led_zep_info] + data_manager.fetch_similar_artists(led_zep_info.id)
         top_tracks = data_manager.fetch_top_tracks(artists=artists)
 
-        labels = cluster_tracks(top_tracks, min_cluster_size=4)
+        clustering_manager = ClusteringManager(tracks=top_tracks)
+        labels = clustering_manager.cluster_tracks(min_cluster_size=4)
 
-        artist_clusters_df = write_clusters_to_csv(top_tracks, labels)
+        artist_clusters_df = clustering_manager.write_clusters_to_csv()
         self.assertEqual(len(artist_clusters_df), len(set(labels)))
 
     def test_clustering_scatterplot(self):
@@ -75,9 +77,10 @@ class TestSpotifyProj(unittest.TestCase):
         artists = [led_zep_info] + data_manager.fetch_similar_artists(led_zep_info.id)
         top_tracks = data_manager.fetch_top_tracks(artists=artists)
 
-        labels = cluster_tracks(tracks=top_tracks, min_cluster_size=4)
+        clustering_manager = ClusteringManager(tracks=top_tracks)
+        clustering_manager.cluster_tracks(min_cluster_size=4)
 
-        plot_tracks_with_clusters(top_tracks, labels)
+        clustering_manager.plot_tracks_with_clusters()
         self.assertTrue(os.path.exists('tests.html'))
 
     def test_artist_spreads(self):
@@ -86,9 +89,10 @@ class TestSpotifyProj(unittest.TestCase):
         artists = [led_zep_info] + data_manager.fetch_similar_artists(led_zep_info.id)
         top_tracks = data_manager.fetch_top_tracks(artists=artists)
 
-        labels = cluster_tracks(tracks=top_tracks, min_cluster_size=4)
+        clustering_manager = ClusteringManager(tracks=top_tracks)
+        labels = clustering_manager.cluster_tracks(min_cluster_size=4)
 
-        artist_spreads = get_artist_spreads_over_clusters(top_tracks, labels)
+        artist_spreads = clustering_manager.get_artist_spreads_over_clusters()
         num_clusters_per_artist = {artist: len(cluster_spread) for artist, cluster_spread in artist_spreads.items()}
 
         self.assertLess(max(num_clusters_per_artist.values()), len(set(labels)))

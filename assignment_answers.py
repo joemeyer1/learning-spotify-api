@@ -4,7 +4,7 @@ from typing import Dict
 
 import pandas as pd
 
-from utilities.clustering_helpers import cluster_tracks, write_clusters_to_csv, get_artist_spreads_over_clusters, plot_tracks_with_clusters
+from utilities.clustering_manager import ClusteringManager
 from utilities.data_manager import DataManager
 from utilities.music_info import ArtistInfo
 
@@ -61,9 +61,9 @@ def cluster_led_zep_and_co_songs() -> pd.DataFrame:
     # After second HDBSCAN iteration, an outlier cluster may still persist,
     # but in practice this is often ok - if it's not, then lingering outliers may be clustered by another algorithm.
     # Another alternative to re-clustering outliers is merging them into existing clustering (e.g. with mean linkage).
-    labels = cluster_tracks(led_zep_ish_tracks_and_feats, min_cluster_size=4)
-
-    return write_clusters_to_csv(led_zep_ish_tracks_and_feats, labels)
+    clustering_manager = ClusteringManager(tracks=led_zep_ish_tracks_and_feats)
+    clustering_manager.cluster_tracks(min_cluster_size=4)
+    return clustering_manager.write_clusters_to_csv()
 
 
 def get_num_clusters_per_artist() -> Dict[str, int]:
@@ -74,12 +74,13 @@ def get_num_clusters_per_artist() -> Dict[str, int]:
     artists = [led_zep_info] + data_manager.fetch_similar_artists(led_zep_info.id)
     top_tracks = data_manager.fetch_top_tracks(artists=artists)
 
-    labels = cluster_tracks(tracks=top_tracks, min_cluster_size=4)
+    clustering_manager = ClusteringManager(tracks=top_tracks)
+    labels = clustering_manager.cluster_tracks(min_cluster_size=4)
 
-    plot_tracks_with_clusters(top_tracks, labels)
-    write_clusters_to_csv(top_tracks, labels)
+    clustering_manager.plot_tracks_with_clusters()
+    clustering_manager.write_clusters_to_csv(clusters_filename='clusters.csv')
 
-    artist_spreads = get_artist_spreads_over_clusters(top_tracks, labels)
+    artist_spreads = clustering_manager.get_artist_spreads_over_clusters()
     print(f"Artist to Cluster Distribution Table:\n{artist_spreads}")
     num_clusters_per_artist = {artist: len(cluster_spread) for artist, cluster_spread in artist_spreads.items()}
     print(f"Artist to Number of Home Clusters Map:\n{num_clusters_per_artist}")
