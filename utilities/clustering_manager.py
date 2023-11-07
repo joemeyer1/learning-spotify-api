@@ -75,8 +75,6 @@ class ClusteringManager:
         """Fetches tracks and reads clusters."""
 
         def _read_clusters_from_tracks() -> np.ndarray:
-            """Reads clusters given the tracks clustered in them."""
-
             track_name_to_ix = {track.name: ix for ix, track in enumerate(self.tracks)}
             clusters_df = pd.read_csv(clusters_filename, index_col='Unnamed: 0')
             cluster_labels = np.zeros(len(self.tracks), dtype=int)
