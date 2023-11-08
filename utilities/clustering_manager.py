@@ -153,6 +153,7 @@ class ClusteringManager:
         show(p)
 
     def get_artist_spreads_over_clusters(self) -> Dict[str, List[int]]:
+        """Maps each artist to the distribution of their tracks over clusters."""
 
         assert self.labels is not None
 
@@ -180,7 +181,7 @@ class ClusteringManager:
             self,
             clusters_filename: str = 'saved_clusters.csv',
     ) -> Dict[str, List[int]]:
-        """Maps each artist to the distribution of their tracks over clusters."""
+        """Reads clusters, then maps each artist to the distribution of their tracks over clusters."""
 
         self.read_clusters(clusters_filename)
         artist_spreads = self.get_artist_spreads_over_clusters()
